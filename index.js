@@ -1,6 +1,3 @@
-const url = "https://cha-th.herokuapp.com/";
-//const url = "http://localhost:4567/";
-
 function buildRooms(list) {
     var roomList = $("<ul class='rooms list-group' style='display: none;'>");
     for (j in list.rooms) {
