@@ -53,6 +53,7 @@ function getAllRooms() {
             var b = data.buildings[i];
             buildRooms(b);
         }
+        $("#spinner").hide();
     })
 }
 
@@ -74,4 +75,4 @@ $("#search").keyup(function(e) {
     } else {
         getAllRooms();
     }
-})
+});
