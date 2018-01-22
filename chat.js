@@ -42,6 +42,7 @@ setTimeout(function () {
 }, 100);
 
 
+// Enter press in text input
 $('#chat-text').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if (keycode === 13) {
@@ -49,6 +50,7 @@ $('#chat-text').keypress(function (event) {
     }
 });
 
+// Sends message that is in chat-text
 function onSendClick() {
     var chatTextField = $("#chat-text");
     var text = chatTextField.val().trim();
@@ -59,3 +61,4 @@ function onSendClick() {
     }));
     chatTextField.val("");
 }
+
