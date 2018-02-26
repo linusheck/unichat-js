@@ -11,7 +11,7 @@ function buildRooms(list) {
                     if (!username) return;
                     window.location.replace("chat.html?id=" + chatRoomId + "&username=" + username);
                 }),
-                $("<span style='color: #6b6c6b;'>" + " " + room.current + "</span>")
+                $("<span style='color: #6b6c6b;'>" + room.current + "</span>")
             )
         );
     }

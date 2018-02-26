@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Unichat Web</title>
+    <link rel="stylesheet" href="../tomato-timer/bootstrap.min.css">
+    <link rel="stylesheet" href="chat.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
 
 <div class="chat">
-
+    <div class="chat-text">
+        <textarea disabled="disabled" id="chat-window">
+        </textarea>
+    </div>
     <div class="chat-input input-group">
         <input style="display: inline;" id="chat-text" type="text" class="" placeholder="Write something...">
         <button style="display: inline;" type="button" class="btn btn-outline-secondary" onclick="onSendClick()">-></button>
     </div>
-
-
-
-
 </div>
 
 
@@ -24,6 +26,4 @@
 <script src="jquery-3.2.1.min.js"></script>
 <script src="config.js"></script>
 <script src="chat.js"></script>
-<link rel="stylesheet" href="bootstrap.min.css">
-<link rel="stylesheet" href="chat.css">
 </html>

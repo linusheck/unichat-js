@@ -19,8 +19,10 @@ var params = getQueryParams(thisUrl[thisUrl.length - 1]);
 var roomId = params["id"];
 var username = params["username"];
 
+// The web socket with which we connect to the server
 var webSocket;
 
+// Open web socket to server
 setTimeout(function () {
     webSocket = new WebSocket(wsUrl + "chatsocket/");
     webSocket.onopen = function (ev) {
@@ -33,9 +35,14 @@ setTimeout(function () {
     };
     webSocket.onmessage = function (ev) {
         var data = JSON.parse(ev.data);
+        console.log(data);
         switch (data.type) {
             case "error":
                 $("body").append("<p>This Room does not exist :(</p>");
+                break;
+            case "message":
+                const chatText = $("#chat-window");
+                chatText.val(chatText.val() + "\n" + data.username + ": " + data.message);
                 break;
         }
     }
