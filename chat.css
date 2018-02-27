@@ -2,8 +2,13 @@
     height: 100%;
 }
 
+.chat-alert {
+    align-content: center;
+}
+
 .chat {
     max-height: 85vh;
+    height: 85vh;
     overflow-y: scroll;
 }
 
@@ -35,9 +40,10 @@
 .time {
     color: dimgrey;
 }
-
+/*
 .chat-input{
     position: fixed;
     bottom: 0;
-    width: 100%;
+    width: vmax;
 }
+*/
