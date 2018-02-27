@@ -130,7 +130,10 @@ function addChatMessage(username, message, self, time) {
     }
 }
 
-
+// On resize (i.e. on-screen-keyboard open), scroll down
+$(window).on("resize", function () {
+    scrollDown()
+});
 
 
 // Enter press in text input
@@ -153,3 +156,5 @@ function onSendClick() {
 
     chatTextField.val("");
 }
+
+
