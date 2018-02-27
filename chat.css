@@ -12,6 +12,14 @@
     overflow-y: scroll;
 }
 
+@media (max-width: 500px) {
+    .chat {
+        max-height: calc(100vh - 180px);
+        height: calc(100vh - 180px);
+        overflow-y: scroll;
+    }
+}
+
 .msg-o {
     max-width: 80%;
     background-color: lightblue;
@@ -40,6 +48,7 @@
 .time {
     color: dimgrey;
 }
+
 /*
 .chat-input{
     position: fixed;
