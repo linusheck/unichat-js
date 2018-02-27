@@ -41,12 +41,21 @@ setTimeout(function () {
                 $("body").append("<p>This Room does not exist :(</p>");
                 break;
             case "message":
-                const chatText = $("#chat-window");
-                chatText.val(chatText.val() + "\n" + data.username + ": " + data.message);
+                addChatMessage(data.username + ": " + data.message);
                 break;
+            case "info-login":
+                addChatMessage(data.username + " logged in!");
+                break;
+            case "info-logout":
+                addChatMessage(data.username + " logged out!");
         }
     }
 }, 100);
+
+function addChatMessage(message) {
+    const chatText = $("#chat-window")
+    chatText.val(chatText.val() + "\n" + message);
+}
 
 
 // Enter press in text input
@@ -68,4 +77,3 @@ function onSendClick() {
     }));
     chatTextField.val("");
 }
-
