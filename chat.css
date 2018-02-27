@@ -1,6 +1,43 @@
-.chat-input {
-    position: absolute;
+.container {
+    height: 100%;
+}
+
+.chat {
+    max-height: 90vh;
+    overflow-y: scroll;
+}
+
+.msg-o {
+    max-width: 80%;
+    background-color: lightblue;
+}
+
+.msg-y {
+    max-width: 80%;
+    background-color: lightgreen;
+    margin-left: auto;
+    text-align: right;
+    margin-right: 0;
+}
+
+.message {
+    word-wrap: break-word;
+}
+
+.msg-o .time {
+    float: right;
+}
+
+.msg-y .time {
+    float: left;
+}
+
+.time {
+    color: dimgrey;
+}
+
+.chat-input{
+    position: fixed;
     bottom: 0;
-    left: 0;
     width: 100%;
 }

@@ -2,28 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Unichat Web</title>
-    <link rel="stylesheet" href="../tomato-timer/bootstrap.min.css">
+    <title>Unichat</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="chat.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
+<div class="container">
 
-
-<div class="chat">
-    <div class="chat-text">
-        <textarea disabled="disabled" id="chat-window">
-        </textarea>
+    <div class="col chat pre-scrollable" id="chat-window">
+        <!--
+        <div class="msg-o col-lg-8">
+            <span></span>
+            <span class="name">Username</span>
+            <br>
+            <span class="message">MEEEEEEEEEEEEEEEEEEEEESSAGE HI HI WELCOME WELCOME DSAÖFJÖLDSA JFÖLDSA FÖLDSAJ FÖLDSA FÖLDSAFLKDSA FAJDSF</span>
+            <span class="time">22:22</span>
+        </div>
+        <div class="col-md-6 form-group"></div>
+        !-->
     </div>
+    <div class="col-md-6 form-group"></div>
     <div class="chat-input input-group">
         <input style="display: inline;" id="chat-text" type="text" class="" placeholder="Write something...">
-        <button style="display: inline;" type="button" class="btn btn-outline-secondary" onclick="onSendClick()">-></button>
+        <button style="display: inline;" type="button" class="btn btn-outline-secondary" onclick="onSendClick()">->
+        </button>
     </div>
 </div>
-
-
-</body>
 <script src="jquery-3.2.1.min.js"></script>
 <script src="config.js"></script>
 <script src="chat.js"></script>
+</body>
 </html>
