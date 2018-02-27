@@ -43,7 +43,7 @@ function setupWebSocket() {
         }
         switch (data.type) {
             case "error":
-                $("body").append("<p>This Room does not exist :(</p>");
+                $("body").append(data.reason);
                 break;
             case "message":
                 // TODO better check for "self"
@@ -86,7 +86,7 @@ function escapeHtml(text) {
 function addChatAlert(message) {
     const chatDiv = $("#chat-window");
     const alert = $(
-        "<div class=\"col-sm\">" +
+        "<div class=\"col-sm chat-alert\">" +
         "    <span><b>" + message + "</b></span>" +
         "</div>"
     );
@@ -150,5 +150,6 @@ function onSendClick() {
         type: "message",
         message: text
     }));
+
     chatTextField.val("");
 }

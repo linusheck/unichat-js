@@ -10,15 +10,20 @@
 <body>
 <div class="container">
 
+
     <div class="col chat pre-scrollable" id="chat-window">
 
     </div>
     <div class="col-md-6 form-group"></div>
-    <div class="chat-input input-group">
-        <input style="display: inline;" id="chat-text" type="text" class="" placeholder="Write something...">
-        <button style="display: inline;" type="button" class="btn btn-primary" onclick="onSendClick()">->
-        </button>
+    <div class="input-group mb-3 chat-input">
+        <input type="text" class="form-control" id="chat-text" placeholder="Write something...">
+        <div class="input-group-addon">
+            <button type="button" class="btn"
+                    onclick="onSendClick()">Send
+            </button>
+        </div>
     </div>
+
 </div>
 <script src="jquery-3.2.1.min.js"></script>
 <script src="config.js"></script>
