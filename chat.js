@@ -111,10 +111,10 @@ function addChatMessage(username, message, self, time) {
     const chatMessage = $(
         "<div class=\"" + c + " col-sm\">\n" +
         "    <span></span>\n" +
+        "    <span class=\"time\">" + time + "</span>\n" +
         "    <span class=\"name\"><b>" + username + "</b></span>\n" +
         "    <br>\n" +
         "    <span class=\"message\">" + message + "</span>\n" +
-        "    <span class=\"time\">" + time + "</span>\n" +
         "</div>\n" +
         "<div class=\"col-md-6 form-group\"></div>"
     );
