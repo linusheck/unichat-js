@@ -43,7 +43,7 @@ function setupWebSocket() {
         }
         switch (data.type) {
             case "error":
-                $("body").append(data.reason);
+                addChatAlert("Error: " + data.reason);
                 break;
             case "message":
                 // TODO better check for "self"
