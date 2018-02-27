@@ -23,7 +23,7 @@ var username = params["username"];
 var webSocket;
 
 // Open web socket to server
-setTimeout(function () {
+function setupWebSocket() {
     webSocket = new WebSocket(wsUrl + "chatsocket/");
     webSocket.onopen = function (ev) {
         // Send the login message to the server
@@ -56,9 +56,13 @@ setTimeout(function () {
                 addChatAlert(data.username + " logged out!");
                 break;
         }
+    };
+    webSocket.onclose = function (ev) {
+        setTimeout(setupWebSocket, 100)
     }
-}, 100);
+}
 
+setTimeout(setupWebSocket, 100);
 
 function msToTime(ms) {
     return new Date(ms).toISOString().slice(11, 16);
