@@ -14,8 +14,8 @@
 
 @media (max-width: 500px) {
     .chat {
-        max-height: calc(100vh - 220px);
-        height: calc(100vh - 220px);
+        max-height: calc(100vh - 150px);
+        height: calc(100vh - 150px);
         overflow-y: scroll;
     }
 }
