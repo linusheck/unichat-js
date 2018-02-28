@@ -20,28 +20,52 @@
     }
 }
 
-.msg-o {
-    max-width: 80%;
-    background-color: lightblue;
+.image-o {
+    display: inline-block;
 }
 
-.msg-y {
+.image-y {
+    display: inline-block;
+    float: right;
+    text-align: right;
+}
+
+.image-o .time {
+    align-self: right;
+}
+
+.image-y .time {
+    float: left;
+}
+
+
+.message-o {
+    display: inline-block;
+    max-width: 80%;
+    background-color: lightblue;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.message-y {
+    display: inline-block;
+    float: right;
     max-width: 80%;
     background-color: lightgreen;
-    margin-left: auto;
     text-align: right;
-    margin-right: 0;
+    border-radius: 5px;
+    padding: 5px;
 }
 
 .message {
     word-wrap: break-word;
 }
 
-.msg-o .time {
+.message-o .time {
     float: right;
 }
 
-.msg-y .time {
+.message-y .time {
     float: left;
 }
 

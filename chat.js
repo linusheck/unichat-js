@@ -87,7 +87,7 @@ function escapeHtml(text) {
 function addChatAlert(message) {
     const chatDiv = $("#chat-window");
     const alert = $(
-        "<div class=\"col-sm chat-alert\">" +
+        "<div class='col-sm chat-alert'>" +
         "    <span><b>" + message + "</b></span>" +
         "</div>"
     );
@@ -109,17 +109,26 @@ function scrollDown() {
 
 
 function addChatMessage(username, message, self, time) {
+    add("message", username, message, self, time)
+}
+
+function add(thing, username, message, self, time) {
     const chatDiv = $("#chat-window");
-    const c = self ? "msg-y" : "msg-o";
+    const c = self ? thing + "-y" : thing + "-o";
     const chatMessage = $(
-        "<div class=\"" + c + " col-sm\">\n" +
+        "<div class='row-lg' style='clear: both'>" +
+        "<div class='" + c + "'>\n" +
         "    <span></span>\n" +
-        "    <span class=\"time\">" + time + "</span>\n" +
-        "    <span class=\"name\"><b>" + username + "</b></span>\n" +
+        "    <span class='time'>" + time + "</span>" + (self ? "\xa0\xa0" : "") +
+        "    <span class='name'><b>" + username + "</b></span>\n" + (!self ? "\xa0\xa0" : "") +
         "    <br>\n" +
-        "    <span class=\"message\">" + message + "</span>\n" +
+        (thing === "message" ?
+                "    <span class='message'>" + message + "</span>\n" :
+                "    <img src=" + message +">"
+        ) +
         "</div>\n" +
-        "<div class=\"col-md-6 form-group\"></div>"
+        "</div>" +
+        "<div class='row-md form-group' style='clear: both;'></div>"
     );
 
     var scrolledDown = isScrolledDown();
@@ -130,24 +139,7 @@ function addChatMessage(username, message, self, time) {
 }
 
 function addImage(username, image, self, time) {
-    const chatDiv = $("#chat-window");
-    const c = self ? "msg-y" : "msg-o";
-    const chatMessage = $(
-        "<div class=\"" + c + " col-sm\">\n" +
-        "    <span></span>\n" +
-        "    <span class=\"time\">" + time + "</span>\n" +
-        "    <span class=\"name\"><b>" + username + "</b></span>\n" +
-        "    <br>\n" +
-        "    <img class=\"message\" src='" + image + "'/>\n" +
-        "</div>\n" +
-        "<div class=\"col-md-6 form-group\"></div>"
-    );
-
-    var scrolledDown = isScrolledDown();
-    chatDiv.append(chatMessage);
-    if (scrolledDown) {
-        scrollDown();
-    }
+    add("image", username, image, self, time)
 }
 
 // On resize (i.e. on-screen-keyboard open), scroll down
@@ -184,7 +176,6 @@ imageUpload.on('click touchstart', function () {
 });
 
 imageUpload.change(sendImageAsBase64);
-
 
 
 function sendImageAsBase64(ev, depth) {
