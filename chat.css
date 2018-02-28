@@ -14,12 +14,16 @@
 
 .image-o {
     display: inline-block;
+    max-width: 100%;
+    height: auto;
 }
 
 .image-y {
     display: inline-block;
     float: right;
     text-align: right;
+    max-width: 100%;
+    height: auto;
 }
 
 .image-o .time {
