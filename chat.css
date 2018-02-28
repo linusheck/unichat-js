@@ -12,18 +12,19 @@
     overflow-y: scroll;
 }
 
-.image-o {
-    display: inline-block;
+img {
     max-width: 100%;
     height: auto;
+}
+
+.image-o {
+    display: inline-block;
 }
 
 .image-y {
     display: inline-block;
     float: right;
     text-align: right;
-    max-width: 100%;
-    height: auto;
 }
 
 .image-o .time {
