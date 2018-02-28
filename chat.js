@@ -185,7 +185,6 @@ imageUpload.on('click touchstart', function () {
 
 imageUpload.on("change", function (ev) {
     sendImageAsBase64(ev.target);
-
 });
 
 
