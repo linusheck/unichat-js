@@ -184,6 +184,7 @@ function sendImageAsBase64(ev, depth) {
     }
     if (depth >= 5) {
         addChatAlert("Could not load your image");
+        return;
     }
     var file = ev.target.files[0];
     var reader = new FileReader();
