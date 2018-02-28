@@ -202,6 +202,7 @@ function sendImageAsBase64(ev, depth) {
             type: "image",
             image: res
         }));
+        $('#image-select').slideToggle();
     });
     reader.onerror = function (ev2) {
         sendImageAsBase64(ev);
