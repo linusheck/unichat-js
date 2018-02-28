@@ -187,24 +187,39 @@ imageUpload.change(sendImageAsBase64);
 
 
 
-function sendImageAsBase64(ev) {
+function sendImageAsBase64(ev, depth) {
+    if (depth === undefined) {
+        depth = 0;
+    }
+    if (depth >= 5) {
+        addChatAlert("Could not load your image");
+    }
     var file = ev.target.files[0];
     var reader = new FileReader();
-    reader.onloadend = function() {
+    reader.addEventListener("load", function () {
         var img = new Image();
         img.src = reader.result;
+        if (img.width === 0 && img.height === 0) {
+            // Yes. This just retries the process.
+            // I was forced to do this by JS. Contact me if you have a better solution
+            sendImageAsBase64(ev, depth + 1);
+            return;
+        }
         var res = resizeImage(img);
         webSocket.send(JSON.stringify({
             type: "image",
             image: res
         }));
+    });
+    reader.onerror = function (ev2) {
+        sendImageAsBase64(ev);
     };
     reader.readAsDataURL(file);
 }
 
 function resizeImage(img) {
-    var MAX_WIDTH = 800;
-    var MAX_HEIGHT = 600;
+    var MAX_WIDTH = 400;
+    var MAX_HEIGHT = 400;
     var width = img.width;
     var height = img.height;
 
@@ -224,6 +239,5 @@ function resizeImage(img) {
     canvas.height = height;
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, width, height);
-    alert(width + " " + height);
     return canvas.toDataURL("image/jpeg");
 }
