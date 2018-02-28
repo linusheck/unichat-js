@@ -183,13 +183,16 @@ imageUpload.on('click touchstart', function () {
     $(this).val('');
 });
 
+imageUpload.change(sendImageAsBase64);
+
 imageUpload.on("change", function (ev) {
     sendImageAsBase64(ev.target);
 });
 
 
 // THANK YOU https://stackoverflow.com/questions/6150289/how-to-convert-image-into-base64-string-using-javascript
-function sendImageAsBase64(element) {
+function sendImageAsBase64(ev) {
+    const element = ev.target;
     var file = element.files[0];
     var reader = new FileReader();
     reader.onloadend = function() {
