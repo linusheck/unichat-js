@@ -17,9 +17,17 @@
     <div class="col-md-6 form-group"></div>
     <div class="input-group mb-3 chat-input">
         <input type="text" class="form-control" id="chat-text" placeholder="Write something...">
+        <div class="input-group-addon" id="image-select" style='display: none;'>
+            <input type="file" id="image-upload" accept="image/png, image/jpeg" onclick=""/>
+        </div>
         <div class="input-group-addon">
-            <button type="button" class="btn"
-                    onclick="onSendClick()">Send
+            <button type="button" class="btn" onclick="$('#image-select').animate({width: 'toggle'});">
+                Image
+            </button>
+        </div>
+        <div class="input-group-addon">
+            <button type="button" class="btn" onclick="onSendClick()">
+                Send
             </button>
         </div>
     </div>
