@@ -7,17 +7,9 @@
 }
 
 .chat {
-    max-height: calc(100vh - 130px);
-    height: calc(100vh - 130px);
+    max-height: calc(100vh - 150px);
+    height: calc(100vh - 150px);
     overflow-y: scroll;
-}
-
-@media (max-width: 800px) {
-    .chat {
-        max-height: calc(100vh - 150px);
-        height: calc(100vh - 150px);
-        overflow-y: scroll;
-    }
 }
 
 .image-o {
@@ -37,7 +29,6 @@
 .image-y .time {
     float: left;
 }
-
 
 .message-o {
     display: inline-block;
