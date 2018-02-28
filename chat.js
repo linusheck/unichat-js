@@ -185,16 +185,45 @@ imageUpload.on('click touchstart', function () {
 
 imageUpload.change(sendImageAsBase64);
 
-// THANK YOU https://stackoverflow.com/questions/6150289/how-to-convert-image-into-base64-string-using-javascript
+
+
 function sendImageAsBase64(ev) {
-    const element = ev.currentTarget;
-    var file = element.files[0];
+    var file = ev.target.files[0];
     var reader = new FileReader();
     reader.onloadend = function() {
+        var img = new Image();
+        img.src = reader.result;
+        var res = resizeImage(img);
         webSocket.send(JSON.stringify({
             type: "image",
-            image: reader.result
+            image: res
         }));
     };
     reader.readAsDataURL(file);
+}
+
+function resizeImage(img) {
+    var MAX_WIDTH = 800;
+    var MAX_HEIGHT = 600;
+    var width = img.width;
+    var height = img.height;
+
+    if (width > height) {
+        if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+        }
+    } else {
+        if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+        }
+    }
+    var canvas = $("#canvas")[0];
+    canvas.width = width;
+    canvas.height = height;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, width, height);
+    alert(width + " " + height);
+    return canvas.toDataURL("image/jpeg");
 }
