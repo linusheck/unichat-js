@@ -192,7 +192,7 @@ imageUpload.on("change", function (ev) {
 
 // THANK YOU https://stackoverflow.com/questions/6150289/how-to-convert-image-into-base64-string-using-javascript
 function sendImageAsBase64(ev) {
-    const element = ev.target;
+    const element = ev.currentTarget;
     var file = element.files[0];
     var reader = new FileReader();
     reader.onloadend = function() {
