@@ -2,16 +2,19 @@ function buildRooms(list) {
     var roomList = $("<ul class='rooms list-group' style='display: none;'>");
     for (j in list.rooms) {
         var room = list.rooms[j];
+        console.log(room.name);
         roomList.append(
             $("<li class='list-group-item'>").append(
-                $("<a href='javascript:void(0);' link-id='" + room.chatRoomId + "'>" + room.name + "</a>").click(function(e) {
+                $("<a href='javascript:void(0);' link-id='" + room.chatRoomId + "'>" + room.name + "&nbsp"
+                    + "</a>").click(function (e) {
                     var target = $(e.target);
                     var chatRoomId = target.attr("link-id");
                     var username = prompt("Your nickname:");
                     if (!username) return;
                     window.location.replace("chat.html?id=" + chatRoomId + "&username=" + username);
                 }),
-                $("<span style='color: #6b6c6b;'>" + "\xa0" + room.current + "</span>")
+                $("<span style='color: #6b6c6b;'>" + (room.onlineUsers !== 0 ? "\xa0(" + room.onlineUsers
+                    + " online)" : "") + "\xa0" + room.current + "</span>")
             )
         );
     }
@@ -61,11 +64,11 @@ setTimeout(getAllRooms, 100);
 
 keyDown = false;
 
-$("#search").keydown(function() {
+$("#search").keydown(function () {
     keyDown = true;
 });
 
-$("#search").keyup(function(e) {
+$("#search").keyup(function (e) {
     if (!keyDown) return;
     keyDown = false;
     var target = $(e.target);

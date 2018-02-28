@@ -12,7 +12,7 @@
     overflow-y: scroll;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 800px) {
     .chat {
         max-height: calc(100vh - 150px);
         height: calc(100vh - 150px);

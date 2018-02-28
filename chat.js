@@ -35,7 +35,6 @@ function setupWebSocket() {
     };
     webSocket.onmessage = function (ev) {
         var data = JSON.parse(ev.data);
-        console.log(data);
         for (var p in data) {
             if (data.hasOwnProperty(p) && (typeof data[p]) === "string") {
                 data[p] = escapeHtml(data[p]);
@@ -46,8 +45,10 @@ function setupWebSocket() {
                 addChatAlert("Error: " + data.reason);
                 break;
             case "message":
-                // TODO better check for "self"
                 addChatMessage(data.username, data.message, data.username === username, msToTime(data.time));
+                break;
+            case "image":
+                addImage(data.username, data.image, data.username === username, msToTime(data.time));
                 break;
             case "info-login":
                 addChatAlert(data.username + " logged in!");
@@ -55,6 +56,7 @@ function setupWebSocket() {
             case "info-logout":
                 addChatAlert(data.username + " logged out!");
                 break;
+
         }
     };
     webSocket.onclose = function (ev) {
@@ -69,8 +71,7 @@ function msToTime(ms) {
 }
 
 function escapeHtml(text) {
-    console.log(text);
-    var map = {
+    const map = {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
@@ -109,9 +110,7 @@ function scrollDown() {
 
 function addChatMessage(username, message, self, time) {
     const chatDiv = $("#chat-window");
-
     const c = self ? "msg-y" : "msg-o";
-
     const chatMessage = $(
         "<div class=\"" + c + " col-sm\">\n" +
         "    <span></span>\n" +
@@ -119,6 +118,27 @@ function addChatMessage(username, message, self, time) {
         "    <span class=\"name\"><b>" + username + "</b></span>\n" +
         "    <br>\n" +
         "    <span class=\"message\">" + message + "</span>\n" +
+        "</div>\n" +
+        "<div class=\"col-md-6 form-group\"></div>"
+    );
+
+    var scrolledDown = isScrolledDown();
+    chatDiv.append(chatMessage);
+    if (scrolledDown) {
+        scrollDown();
+    }
+}
+
+function addImage(username, image, self, time) {
+    const chatDiv = $("#chat-window");
+    const c = self ? "msg-y" : "msg-o";
+    const chatMessage = $(
+        "<div class=\"" + c + " col-sm\">\n" +
+        "    <span></span>\n" +
+        "    <span class=\"time\">" + time + "</span>\n" +
+        "    <span class=\"name\"><b>" + username + "</b></span>\n" +
+        "    <br>\n" +
+        "    <img class=\"message\" src='" + image + "'/>\n" +
         "</div>\n" +
         "<div class=\"col-md-6 form-group\"></div>"
     );
@@ -157,20 +177,27 @@ function onSendClick() {
     chatTextField.val("");
 }
 
-function toggleFullScreen() {
-    var doc = window.document;
-    var docEl = doc.documentElement;
+const imageUpload = $("#image-upload");
 
-    var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-    var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+imageUpload.on('click touchstart', function () {
+    $(this).val('');
+});
 
-    if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
-        requestFullScreen.call(docEl);
-    }
-    else {
-        cancelFullScreen.call(doc);
-    }
+imageUpload.on("change", function (ev) {
+    sendImageAsBase64(ev.target);
+
+});
+
+
+// THANK YOU https://stackoverflow.com/questions/6150289/how-to-convert-image-into-base64-string-using-javascript
+function sendImageAsBase64(element) {
+    var file = element.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function() {
+        webSocket.send(JSON.stringify({
+            type: "image",
+            image: reader.result
+        }));
+    };
+    reader.readAsDataURL(file);
 }
-
-toggleFullScreen();
-
