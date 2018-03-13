@@ -24,7 +24,7 @@ $("#img-upload").attr("action", url + "imgupload");
 // The web socket with which we connect to the server
 var webSocket;
 
-doLogin = false;
+doLogin = true;
 var rsa = forge.pki.rsa;
 
 var keypair = rsa.generateKeyPair({bits: 1024, e: 0x10001});
@@ -32,7 +32,10 @@ console.log(keyPairToBase64().length);
 
 
 function keyPairToBase64() {
-    return forge.util.encode64(forge.util.decode64(forge.pki.publicKeyToPem(keypair.publicKey).split("\r\n").slice(1, 5).join("")).slice(29,157))
+    return forge.pki.publicKeyToPem(keypair.publicKey)
+        .replace("-----BEGIN PUBLIC KEY-----", "")
+        .replace("-----END PUBLIC KEY-----", "")
+        .replace(/\n|\r/g, "");
 }
 
 
@@ -46,7 +49,6 @@ function setupWebSocket() {
                 type: "challenge",
                 "user-id": keyPairToBase64()
             }));
-            console.log("sent")
         }
         else {
             webSocket.send(JSON.stringify({
@@ -55,7 +57,6 @@ function setupWebSocket() {
                 username: username
             }));
         }
-
     };
     webSocket.onmessage = function (ev) {
         var data = JSON.parse(ev.data);
@@ -73,7 +74,13 @@ function setupWebSocket() {
                 console.log(bytes);
                 const decrypted = keypair.privateKey.decrypt(bytes);
                 const solution = forge.util.encode64(decrypted);
-                alert(solution);
+                webSocket.send(JSON.stringify({
+                    type: "login",
+                    room: roomId,
+                    username: username,
+                    "user-id": keyPairToBase64(),
+                    "challenge-response": solution
+                }));
                 break;
             case "error":
                 addChatAlert("Error: " + data.reason);
@@ -93,9 +100,11 @@ function setupWebSocket() {
 
         }
     };
+    /*
     webSocket.onclose = function (ev) {
         setTimeout(setupWebSocket, 100)
     }
+    */
 }
 
 setTimeout(setupWebSocket, 100);
@@ -232,74 +241,12 @@ function sendImage(ev) {
     xhr.send(formData);
 }
 
-
-
-/*
-function sendImageAsBase64(ev, depth) {
-    if (depth === undefined) {
-        depth = 0;
-    }
-    if (depth >= 5) {
-        addChatAlert("Could not load your image");
-        return;
-    }
-    var file = ev.target.files[0];
-    var reader = new FileReader();
-    reader.addEventListener("load", function () {
-        var img = new Image();
-        img.src = reader.result;
-        if (img.width === 0 && img.height === 0) {
-            // Yes. This just retries the process.
-            // I was forced to do this by JS. Contact me if you have a better solution
-            sendImageAsBase64(ev, depth + 1);
-            return;
-        }
-        var res = resizeImage(img);
-        webSocket.send(JSON.stringify({
-            type: "image",
-            image: res
-        }));
-        $('#image-select').slideToggle();
-    });
-    reader.onerror = function (ev2) {
-        sendImageAsBase64(ev);
-    };
-    reader.readAsDataURL(file);
-}
-
-function resizeImage(img) {
-    var MAX_WIDTH = 400;
-    var MAX_HEIGHT = 400;
-    var width = img.width;
-    var height = img.height;
-
-    if (width > height) {
-        if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-        }
-    } else {
-        if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-        }
-    }
-    var canvas = $("#canvas")[0];
-    canvas.width = width;
-    canvas.height = height;
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, width, height);
-    return canvas.toDataURL("image/jpeg");
-}
 function convertBase64ToBinary(base64) {
     var raw = window.atob(base64);
     var rawLength = raw.length;
     var array = new Uint8Array(new ArrayBuffer(rawLength));
-
     for(i = 0; i < rawLength; i++) {
         array[i] = raw.charCodeAt(i);
     }
     return array;
 }
-
-*/
