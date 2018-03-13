@@ -19,19 +19,43 @@ var params = getQueryParams(thisUrl[thisUrl.length - 1]);
 var roomId = params["id"];
 var username = params["username"];
 
+$("#img-upload").attr("action", url + "imgupload");
+
 // The web socket with which we connect to the server
 var webSocket;
+
+doLogin = false;
+var rsa = forge.pki.rsa;
+
+var keypair = rsa.generateKeyPair({bits: 1024, e: 0x10001});
+console.log(keyPairToBase64().length);
+
+
+function keyPairToBase64() {
+    return forge.util.encode64(forge.util.decode64(forge.pki.publicKeyToPem(keypair.publicKey).split("\r\n").slice(1, 5).join("")).slice(29,157))
+}
+
 
 // Open web socket to server
 function setupWebSocket() {
     webSocket = new WebSocket(wsUrl + "chatsocket/");
     webSocket.onopen = function (ev) {
         // Send the login message to the server
-        webSocket.send(JSON.stringify({
-            type: "login",
-            room: roomId,
-            username: username
-        }));
+        if (doLogin) {
+            webSocket.send(JSON.stringify({
+                type: "challenge",
+                "user-id": keyPairToBase64()
+            }));
+            console.log("sent")
+        }
+        else {
+            webSocket.send(JSON.stringify({
+                type: "login",
+                room: roomId,
+                username: username
+            }));
+        }
+
     };
     webSocket.onmessage = function (ev) {
         var data = JSON.parse(ev.data);
@@ -41,6 +65,15 @@ function setupWebSocket() {
             }
         }
         switch (data.type) {
+            case "challenge":
+                const challenge = data["challenge"];
+                console.log(challenge);
+                const bytes = convertBase64ToBinary(challenge);
+                console.log(bytes);
+                const decrypted = keypair.privateKey.decrypt(bytes);
+                const solution = forge.util.encode64(decrypted);
+                alert(solution);
+                break;
             case "error":
                 addChatAlert("Error: " + data.reason);
                 break;
@@ -49,6 +82,9 @@ function setupWebSocket() {
                 break;
             case "image":
                 addImage(data.username, data.image, data.username === username, msToTime(data.time));
+                break;
+            case "image_new":
+                addImage(data.username, url + "image/" + data.image, data.username === username, msToTime(data.time));
                 break;
             case "info-login":
                 addChatAlert(data.username + " logged in!");
@@ -175,9 +211,55 @@ imageUpload.on('click touchstart', function () {
     $(this).val('');
 });
 
-imageUpload.change(sendImageAsBase64);
+imageUpload.change(sendImage);
 
+function sendImage(ev) {
+    var file = ev.target.files[0];
+    var formData = new FormData();
+    formData.append("uploaded_file", file, file.name);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url + 'imgupload', true);
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var imageId = xhr.responseText;
+            $('#image-select').slideToggle();
+            webSocket.send(JSON.stringify({
+                type: "image_new",
+                "image": imageId
+            }));
+        } else {
+            console.log(xhr.responseText);
+            alert('An error occurred!');
+        }
+    };
+    xhr.send(formData);
+}
 
+function post(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+        }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+/*
 function sendImageAsBase64(ev, depth) {
     if (depth === undefined) {
         depth = 0;
@@ -234,3 +316,15 @@ function resizeImage(img) {
     ctx.drawImage(img, 0, 0, width, height);
     return canvas.toDataURL("image/jpeg");
 }
+function convertBase64ToBinary(base64) {
+    var raw = window.atob(base64);
+    var rawLength = raw.length;
+    var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+    for(i = 0; i < rawLength; i++) {
+        array[i] = raw.charCodeAt(i);
+    }
+    return array;
+}
+
+*/
