@@ -65,13 +65,10 @@ function setupWebSocket() {
                 data[p] = escapeHtml(data[p]);
             }
         }
-        console.log(data.type);
         switch (data.type) {
             case "challenge":
                 const challenge = data["challenge"];
-                console.log(challenge);
                 const bytes = convertBase64ToBinary(challenge);
-                console.log(bytes);
                 const decrypted = keypair.privateKey.decrypt(bytes);
                 const solution = forge.util.encode64(decrypted);
                 webSocket.send(JSON.stringify({
@@ -100,11 +97,11 @@ function setupWebSocket() {
 
         }
     };
-    /*
+
     webSocket.onclose = function (ev) {
         setTimeout(setupWebSocket, 100)
     }
-    */
+
 }
 
 setTimeout(setupWebSocket, 100);
