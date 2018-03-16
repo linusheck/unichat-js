@@ -1,3 +1,11 @@
+if ($("#password").val() !== "") {
+    $("#login-button").text("Logged in");
+}
+
+$("#login-form").submit(function(e) {
+    e.preventDefault();
+});
+
 function buildRooms(list) {
     var roomList = $("<ul class='rooms list-group' style='display: none;'>");
     for (j in list.rooms) {
@@ -11,6 +19,10 @@ function buildRooms(list) {
                     var chatRoomId = target.attr("link-id");
                     var username = prompt("Your nickname:");
                     if (!username) return;
+                    const password = $("#password").val();
+                    if (password !== "") {
+                        sessionStorage.setItem("privateKey", password);
+                    }
                     window.location.replace("chat.html?id=" + chatRoomId + "&username=" + username);
                 }),
                 $("<span style='color: #6b6c6b;'>" + (room.onlineUsers !== 0 ? "\xa0(" + room.onlineUsers

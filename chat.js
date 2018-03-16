@@ -24,18 +24,26 @@ $("#img-upload").attr("action", url + "imgupload");
 // The web socket with which we connect to the server
 var webSocket;
 
-doLogin = true;
-var rsa = forge.pki.rsa;
 
-var keypair = rsa.generateKeyPair({bits: 1024, e: 0x10001});
-console.log(keyPairToBase64().length);
+const pki = forge.pki;
+const rsa = pki.rsa;
+
+var privateKeyPem = passwToKey(sessionStorage.getItem("privateKey"));
+var privateKey = null;
+var publicKey = null;
+doLogin = false;
+if (privateKeyPem != null) {
+    doLogin = true;
+    privateKey = pki.privateKeyFromPem(privateKeyPem);
+    publicKey = rsa.setPublicKey(privateKey.n, privateKey.e);
+}
 
 
-function keyPairToBase64() {
-    return forge.pki.publicKeyToPem(keypair.publicKey)
+function publicKeyToBase64() {
+    return pki.publicKeyToPem(publicKey)
         .replace("-----BEGIN PUBLIC KEY-----", "")
         .replace("-----END PUBLIC KEY-----", "")
-        .replace(/\n|\r/g, "");
+        .replace(/[\n\r]/g, "");
 }
 
 
@@ -47,7 +55,7 @@ function setupWebSocket() {
         if (doLogin) {
             webSocket.send(JSON.stringify({
                 type: "challenge",
-                "user-id": keyPairToBase64()
+                "user-id": publicKeyToBase64()
             }));
         }
         else {
@@ -69,13 +77,13 @@ function setupWebSocket() {
             case "challenge":
                 const challenge = data["challenge"];
                 const bytes = convertBase64ToBinary(challenge);
-                const decrypted = keypair.privateKey.decrypt(bytes);
+                const decrypted = privateKey.decrypt(bytes);
                 const solution = forge.util.encode64(decrypted);
                 webSocket.send(JSON.stringify({
                     type: "login",
                     room: roomId,
                     username: username,
-                    "user-id": keyPairToBase64(),
+                    "user-id": publicKeyToBase64(),
                     "challenge-response": solution
                 }));
                 break;
@@ -164,7 +172,7 @@ function add(thing, username, message, self, time) {
         "    <br>\n" +
         (thing === "message" ?
                 "    <span class='message'>" + message + "</span>\n" :
-                "    <img src=" + message +">"
+                "    <img src=" + message + (isScrolledDown() ? " onload='scrollDown();'" : "") + ">"
         ) +
         "</div>\n" +
         "</div>" +
@@ -173,7 +181,7 @@ function add(thing, username, message, self, time) {
 
     var scrolledDown = isScrolledDown();
     chatDiv.append(chatMessage);
-    if (scrolledDown) {
+    if (thing === "message" && scrolledDown) {
         scrollDown();
     }
 }
