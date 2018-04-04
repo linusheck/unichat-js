@@ -36,6 +36,7 @@ if (privateKeyPem != null) {
     doLogin = true;
     privateKey = pki.privateKeyFromPem(privateKeyPem);
     publicKey = rsa.setPublicKey(privateKey.n, privateKey.e);
+    getBuddyList();
 }
 
 
@@ -91,10 +92,10 @@ function setupWebSocket() {
                 addChatAlert("Error: " + data.reason);
                 break;
             case "message":
-                addChatMessage(data.username, data.message, data.username === username, msToTime(data.time));
+                addChatMessage(data.username, data.message, data.username === username, msToTime(data.time), data["user-id"]);
                 break;
             case "image":
-                addImage(data.username, url + "image/" + data.image, data.username === username, msToTime(data.time));
+                addImage(data.username, url + "image/" + data.image, data.username === username, msToTime(data.time), data["user-id"]);
                 break;
             case "info-login":
                 addChatAlert(data.username + " logged in!");
@@ -156,11 +157,11 @@ function scrollDown() {
 }
 
 
-function addChatMessage(username, message, self, time) {
-    add("message", username, message, self, time)
+function addChatMessage(username, message, self, time, id) {
+    add("message", username, message, self, time, id)
 }
 
-function add(thing, username, message, self, time) {
+function add(thing, username, message, self, time, id) {
     const chatDiv = $("#chat-window");
     const c = self ? thing + "-y" : thing + "-o";
     const chatMessage = $(
@@ -168,7 +169,11 @@ function add(thing, username, message, self, time) {
         "<div class='" + c + "'>\n" +
         "    <span></span>\n" +
         "    <span class='time'>" + time + "</span>" + (self ? "\xa0\xa0" : "") +
-        "    <span class='name'><b>" + username + "</b></span>\n" + (!self ? "\xa0\xa0" : "") +
+        "    <span class='name'><b>" + username + "</b> " +
+        ((self || !doLogin || id === "anonymous:" + username) ? "" :
+            "    <a href='javascript:void(0);' onclick=\"buddyListAction('" + id + "', '" + username + "')\">" +
+            (buddyList.indexOf(id) !== -1 ? "[-]" : "[+]") + "</a>") +
+        "    </span>\n" + (!self ? "\xa0\xa0" : "") +
         "    <br>\n" +
         (thing === "message" ?
                 "    <span class='message'>" + message + "</span>\n" :
@@ -186,8 +191,20 @@ function add(thing, username, message, self, time) {
     }
 }
 
-function addImage(username, image, self, time) {
-    add("image", username, image, self, time)
+function buddyListAction(id, username) {
+    if (buddyList.indexOf(id) !== -1) {
+        buddyList.splice(buddyList.indexOf(id), 1);
+        addChatAlert(username + " was removed from your buddy list")
+    } else {
+        buddyList.push(id);
+        addChatAlert(username + " was added to your buddy list")
+    }
+    console.log(buddyList);
+    saveBuddyList();
+}
+
+function addImage(username, image, self, time, id) {
+    add("image", username, image, self, time, id)
 }
 
 // On resize (i.e. on-screen-keyboard open), scroll down
@@ -250,7 +267,7 @@ function convertBase64ToBinary(base64) {
     var raw = window.atob(base64);
     var rawLength = raw.length;
     var array = new Uint8Array(new ArrayBuffer(rawLength));
-    for(i = 0; i < rawLength; i++) {
+    for (i = 0; i < rawLength; i++) {
         array[i] = raw.charCodeAt(i);
     }
     return array;

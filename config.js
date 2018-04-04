@@ -9,16 +9,20 @@ if (document.location.href.indexOf("localhost") !== -1) {
     wsUrl = "wss://cha-th.herokuapp.com/";
 }
 
+url = "https://cha-th.herokuapp.com/";
+wsUrl = "wss://cha-th.herokuapp.com/";
+
 var path = window.location.pathname;
 
 const beginPrivate = "-----BEGIN RSA PRIVATE KEY-----$";
 const endPrivate = "$-----END RSA PRIVATE KEY-----$";
 
 function keyToPassw(key) {
+    if (key == null) return null;
     return key.split("\r\n").join("$").replace(beginPrivate, "").replace(endPrivate, "");
 }
 
 function passwToKey(password) {
-    console.log(password);
+    if (password == null) return null;
     return (beginPrivate + password + endPrivate).split("$").join("\r\n");
 }

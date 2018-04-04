@@ -1,11 +1,3 @@
-if ($("#password").val() !== "") {
-    $("#login-button").text("Logged in");
-}
-
-$("#login-form").submit(function(e) {
-    e.preventDefault();
-});
-
 function buildRooms(list) {
     var roomList = $("<ul class='rooms list-group' style='display: none;'>");
     for (j in list.rooms) {
@@ -17,7 +9,10 @@ function buildRooms(list) {
                     + "</a>").click(function (e) {
                     var target = $(e.target);
                     var chatRoomId = target.attr("link-id");
-                    var username = prompt("Your nickname:");
+                    var username = getCookie("unichat-username");
+                    if (!username) {
+                        username = prompt("Your nickname:");
+                    }
                     if (!username) return;
                     const password = $("#password").val();
                     if (password !== "") {
@@ -61,6 +56,7 @@ function searchRooms(query) {
 }
 
 function getAllRooms() {
+
     lastData = null;
     $("#room-select").empty();
     $.get(url + "allrooms", function (data) {
@@ -73,6 +69,12 @@ function getAllRooms() {
 }
 
 setTimeout(getAllRooms, 100);
+$(document).ready(function() {
+    if ($("#password").val() !== "") {
+        $("#login-button").text("Logged in");
+    }
+});
+
 
 keyDown = false;
 
@@ -90,4 +92,15 @@ $("#search").keyup(function (e) {
     } else {
         getAllRooms();
     }
+});
+
+$("#username-btn").click(function(e) {
+    const usernameInput = $("#username-input");
+    setCookie("unichat-username", usernameInput.val());
+    usernameInput.val("")
+});
+
+$("#delete-username").click(function(e) {
+    setCookie("unichat-username", null);
+    $("#username-input").val("")
 });
