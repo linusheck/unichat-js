@@ -164,15 +164,17 @@ function addChatMessage(username, message, self, time, id) {
 function add(thing, username, message, self, time, id) {
     const chatDiv = $("#chat-window");
     const c = self ? thing + "-y" : thing + "-o";
+    const isBuddy = buddyList.hasOwnProperty(id);
     const chatMessage = $(
         "<div class='row-lg' style='clear: both'>" +
         "<div class='" + c + "'>\n" +
         "    <span></span>\n" +
         "    <span class='time'>" + time + "</span>" + (self ? "\xa0\xa0" : "") +
-        "    <span class='name'><b>" + username + "</b> " +
+        "    <span class='name'><b " + (isBuddy ? "style='color:#0A690A;'" : "") + ">"
+            + username + (isBuddy ? " [BUDDY]" : "") + "</b> " +
         ((self || !doLogin || id === "anonymous:" + username) ? "" :
             "    <a href='javascript:void(0);' onclick=\"buddyListAction('" + id + "', '" + username + "')\">" +
-            (buddyList.indexOf(id) !== -1 ? "[-]" : "[+]") + "</a>") +
+            (isBuddy ? "[-]" : "[+]") + "</a>") +
         "    </span>\n" + (!self ? "\xa0\xa0" : "") +
         "    <br>\n" +
         (thing === "message" ?
@@ -192,14 +194,13 @@ function add(thing, username, message, self, time, id) {
 }
 
 function buddyListAction(id, username) {
-    if (buddyList.indexOf(id) !== -1) {
-        buddyList.splice(buddyList.indexOf(id), 1);
-        addChatAlert(username + " was removed from your buddy list")
+    if (buddyList.hasOwnProperty(id)) {
+        buddyListRemove(id);
+        addChatAlert(username + " was removed from your buddy list. <a href='buddies.html'>Configure buddy list</a>")
     } else {
-        buddyList.push(id);
-        addChatAlert(username + " was added to your buddy list")
+        buddyListAdd(id, username);
+        addChatAlert(username + " was added to your buddy list. <a href='buddies.html'>Configure buddy list</a>")
     }
-    console.log(buddyList);
     saveBuddyList();
 }
 

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Buddy List</title>
+
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container">
+    <h2>Buddy List</h2>
+    <button class="btn btn-danger" onclick="askDelete()">Delete Whole List</button>
+    <button class="btn btn-outline-primary" disabled id="save">Save Changes</button>
+    <br>
+    <br>
+    <div class="input-group">
+        <span class="input-group-addon">Add ID manually</span>
+        <input type="text" class="form-control" id="id-input" placeholder="ID">
+        <input type="text" class="form-control" id="name-input" placeholder="Name">
+        <button class="btn btn-primary" type="button" id="btn-add-id">Add</button>
+    </div>
+    <br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>last seen as</th>
+            <th>id (hover for more)</th>
+            <th>Remove</th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+<script src="jquery-3.2.1.min.js"></script>
+<script src="cookies.js"></script>
+<script src="buddy_list.js"></script>
+<script>
+    getBuddyList();
+
+    function askDelete() {
+        if (confirm("Are you sure you want to delete your buddy list?")) {
+            deleteBuddyList();
+        }
+    }
+
+    const tbody = $("#tbody");
+    function drawList() {
+        tbody.empty();
+        for (const b in buddyList) {
+            if (buddyList.hasOwnProperty(b)) {
+                const name = buddyList[b];
+                tbody.append("<tr><td>" + name + "</td>" +
+                    "<td><span title='" + b + "'>" + b.substr(0, 20) + "..." + "</span></td>" +
+                    "<td>" + "<button class='btn btn-danger' onclick='remove(\"" + b + "\")'>X</button>" + "</td></tr>")
+            }
+        }
+    }
+    drawList();
+
+
+    function remove(id) {
+        buddyListRemove(id);
+        const save = $("#save");
+        save.prop("disabled", false);
+        save.prop("class", "btn btn-primary");
+        drawList();
+    }
+
+    const save = $("#save");
+    save.click(function () {
+        saveBuddyList();
+        save.prop("disabled", true);
+        save.prop("class", "btn btn-outline");
+    });
+
+    $("#btn-add-id").click(function() {
+        buddyListAdd($("#id-input").val(), $("#name-input").val());
+        $("#id-input").val("");
+        $("#name-input").val("");
+        save.prop("disabled", false);
+        save.prop("class", "btn btn-primary");
+        drawList();
+    });
+</script>
+</html>
