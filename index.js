@@ -69,11 +69,6 @@ function getAllRooms() {
 }
 
 setTimeout(getAllRooms, 100);
-$(document).ready(function() {
-    if ($("#password").val() !== "") {
-        $("#login-button").text("Logged in");
-    }
-});
 
 
 keyDown = false;
@@ -104,3 +99,7 @@ $("#delete-username").click(function(e) {
     setCookie("unichat-username", null);
     $("#username-input").val("")
 });
+
+function showPassword() {
+    $("#password").attr("type", "text")
+}
