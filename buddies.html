@@ -12,6 +12,13 @@
     <h2>Buddy List</h2>
     <button class="btn btn-danger" onclick="askDelete()">Delete Whole List</button>
     <button class="btn btn-outline-primary" disabled id="save">Save Changes</button>
+    <button class="btn btn-outline-primary" id="copy-list">Copy List (JSON)</button>
+    <button class="btn btn-outline-primary" id="paste-list">Paste List (JSON)</button>
+
+    <br>
+    <br>
+    <textarea style="display: none;" id="copy" title="Copy"></textarea>
+    <textarea style="display: none;" id="paste" title="Paste" placeholder="Paste here"></textarea>
     <br>
     <br>
     <div class="input-group">
@@ -49,6 +56,7 @@
     }
 
     const tbody = $("#tbody");
+
     function drawList() {
         tbody.empty();
         for (const b in buddyList) {
@@ -60,6 +68,7 @@
             }
         }
     }
+
     drawList();
 
 
@@ -78,7 +87,7 @@
         save.prop("class", "btn btn-outline");
     });
 
-    $("#btn-add-id").click(function() {
+    $("#btn-add-id").click(function () {
         buddyListAdd($("#id-input").val(), $("#name-input").val());
         $("#id-input").val("");
         $("#name-input").val("");
@@ -86,5 +95,42 @@
         save.prop("class", "btn btn-primary");
         drawList();
     });
+
+    const copy = $("#copy");
+    const paste = $("#paste");
+
+    $("#copy-list").click(function () {
+        const list = JSON.stringify(buddyList);
+        copy.val(list);
+        copy.show();
+        copy.select();
+        document.execCommand("copy");
+        copy.hide();
+    });
+
+    $("#paste-list").click(function () {
+        paste.show();
+        paste.select();
+        paste.val("");
+    });
+
+    paste.on("paste", function() {
+        setTimeout(function () {
+            var list = null;
+            try {
+                list = JSON.parse(paste.val());
+            } catch (e) {
+                console.log(e);
+                alert("Your clipboard is not valid JSON.");
+                return;
+            }
+            if (confirm("This will delete your current buddy list. Continue?")) {
+                buddyList = list;
+                saveBuddyList();
+                paste.hide();
+                drawList();
+            }
+        }, 100);
+    })
 </script>
 </html>

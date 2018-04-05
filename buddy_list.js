@@ -22,7 +22,7 @@ function buddyListRemove(id) {
 }
 
 function saveBuddyList() {
-    setCookie("unichat-buddy-list", JSON.stringify(buddyList));
+    setCookie("unichat-buddy-list", JSON.stringify(buddyList), 5000);
 }
 
 function deleteBuddyList() {

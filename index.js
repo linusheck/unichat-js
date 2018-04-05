@@ -96,7 +96,7 @@ $("#search").keyup(function (e) {
 
 $("#username-btn").click(function(e) {
     const usernameInput = $("#username-input");
-    setCookie("unichat-username", usernameInput.val());
+    setCookie("unichat-username", usernameInput.val(), 5000);
     usernameInput.val("")
 });
 
