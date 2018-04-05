@@ -20,19 +20,24 @@
         </div>
         <div id="login-dropdown" style="display: none;">
             <h4>Login with your secret key</h4>
-            <form class="input-group" id="login-form" action="login.html">
-                <label for="password" class="input-group-addon">Secret key </label>
-                <input class="form-control" type="password" id="password">
+            <form  id="login-form" action="login.html">
+                <div class="input-group">
+                    <label for="password" class="input-group-addon">Secret key </label>
+                    <input class="form-control" type="password" id="password">
+                </div>
+                <br>
                 <input type="button" class="btn" value="Show key" onclick="showPassword()">
                 <input type="submit" class="btn btn-outline-primary" value="Save as password">
             </form>
+            <hr>
             <br>
             <div class="row">
                 <div class="col-md">
                     <h4>Don't have a secret key?</h4>
                     <a href="identity.html" class="btn btn-primary">Create Identity</a>
-                    <br>
-                    <br>
+                </div>
+                <div class="col-md">
+                    <h4>Delete/add buddies</h4>
                     <a href="buddies.html" class="btn btn-secondary">Configure Buddy List</a>
                 </div>
                 <div class="col-lg">
@@ -40,9 +45,10 @@
                     <div class="input-group">
                         <label for="username-input" class="input-group-addon">Username </label>
                         <input class="form-control" type="text" id="username-input" maxlength="32">
-                        <input type="submit" class="btn btn-primary" value="Set as username" id="username-btn">
                     </div>
                     <br>
+                    <input type="submit" class="btn btn-primary" value="Set as username" id="username-btn">
+
                     <input type="button" class="btn btn-danger" value="Delete Username" id="delete-username">
                 </div>
             </div>
