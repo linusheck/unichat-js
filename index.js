@@ -60,7 +60,11 @@ function getAllRooms() {
     lastData = null;
     $("#room-select").empty();
     $.get(url + "allrooms", function (data) {
-        for (i in data.buildings) {
+        if (data.buildings.length === 0) {
+            $("#room-select").append("<p>The server is booting up, " +
+                "and currently retrieving the rooms from the RWTH. " +
+                "Please try again in a minute or so. :)</p>");
+        } else for (i in data.buildings) {
             var b = data.buildings[i];
             buildRooms(b);
         }
